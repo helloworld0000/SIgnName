@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学生个人主页</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+
+    <link href='http://fonts.useso.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="../app/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../app/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../app/static/css/templatemo-style.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="templatemo-flex-row">
+      <div class="templatemo-sidebar">
+        <header class="templatemo-site-header">
+          <div class="square"></div>
+          <h1>学生个人主页</h1>
+        </header>
+        <div class="profile-photo-container">
+          <img src="../app/static/images/walala.jpg" alt="Profile Photo" class="img-responsive">
+          <div class="profile-photo-overlay"></div>
+        </div>
+
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+          </div>
+        <nav class="templatemo-left-nav">
+          <ul>
+            <li><a href="#"><i class="fa fa-bar-chart fa-fw"></i>学号:{{ student.student_id }}</a></li>
+            <li><a href="#"><i class="fa fa-database fa-fw"></i>学生姓名:{{ student.student_name }}</a></li>
+            <li><a href="#"><i class="fa fa-map-marker fa-fw"></i>选课时间1:{{ student.course1.course_name }}</a></li>
+            <li><a href="#"><i class="fa fa-users fa-fw"></i>选课时间2:{{ student.course2.course_name }}</a></li>
+              <li><a href="#"><i class="fa fa-users fa-fw"></i>所在年级:{{ student.student_grade }}年级</a></li>
+            <li><a href="/studentprofile"><i class="fa fa-sliders fa-fw"></i>Profile</a></li>
+            <li><a href=""><i class="fa fa-eject fa-fw"></i>Sign Out</a></li>
+          </ul>
+        </nav>
+      </div>
+    <div class="templatemo-content col-1 light-gray-bg">
+        <div class="templatemo-top-nav-container">
+          <div class="row">
+            <nav class="templatemo-top-nav col-lg-12 col-md-12">
+              <ul class="text-uppercase">
+                <li><a href="/studentprofile" class="active">更改个人信息</a></li>
+                <li><a href="">签到规则</a></li>
+                <li><a href="">关于我们</a></li>
+                <li><a href="">重新登录</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="templatemo-content-container">
+          <div class="templatemo-content-widget no-padding">
+            <div class="panel panel-default table-responsive">
+              <table class="table table-striped table-bordered templatemo-user-table">
+                <thead>
+                  <tr>
+                    <td><a href="#" class="white-text templatemo-sort-by">姓名<span class="caret"></span></a></td>
+                    <td><a href="#" class="white-text templatemo-sort-by">签到课程 <span class="caret"></span></a></td>
+                    <td><a href="#" class="white-text templatemo-sort-by">签到时间 <span class="caret"></span></a></td>
+                    <td><a href="#" class="white-text templatemo-sort-by">签到ip <span class="caret"></span></a></td>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for attendence in attendences %}
+                    <tr>
+
+                        <td> {{ attendence.student.student_name }} </td>
+                        <td> {{ attendence.course.course_name }} </td>
+                        <td> {{ attendence.time }} </td>
+                        <td> {{ attendence.ip }} </td>
+                    </tr>
+                     {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+ <div class="templatemo-flex-row flex-content-row">
+            <div class="col-1">
+              <div class="panel panel-default margin-10">
+                <div class="panel-heading"><h2 class="text-uppercase">学生签到</h2></div>
+                <div class="panel-body">
+
+                    <form method="post" action="studentdetails" class="templatemo-login-form" >
+
+                        <div class="form-group">
+                      {% csrf_token %}
+                     {{ form }}
+                    </div>
+
+
+
+                    <div class="form-group">
+                      <button type="submit" class="templatemo-blue-button">确认签到</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+    {% if time_is_wrong %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>错误!</h4>签到时间错误
+        </div>
+    {% endif %}
+
+
+        {% if ip_is_wrong %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>错误!</h4>签到ip错误
+        </div>
+    {% endif %}
+
+
+
+</body>
+</html>
