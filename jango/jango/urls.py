@@ -42,5 +42,5 @@ urlpatterns = [
     url(r'^studentdetails$', app_views.studentdetails, name='studentdetails'),
     url(r'^login/$', auth_views.login,{'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout,{'template_name': 'loginout.html'}, name='logout'),
-    url(r'^register/$', app_views.register, name='register'),
+    # url(r'^admincheck/login$', app_views.adminchecklogin, name='adminchecklogin'),
 ]

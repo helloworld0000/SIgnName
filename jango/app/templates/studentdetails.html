@@ -120,6 +120,12 @@
         </div>
     {% endif %}
 
+ {% if repeat_is_wrong %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>错误!</h4>重复签到，请稍后再签
+        </div>
+    {% endif %}
 
 
 </body>

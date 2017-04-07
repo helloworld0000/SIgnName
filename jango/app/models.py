@@ -16,6 +16,7 @@ class Alum(models.Model):
     artist = models.ForeignKey(Artist)
 
 class Course(models.Model):
+
     id = models.AutoField(primary_key=True)
     course_id = models.CharField("course_id",max_length=50)
     course_name = models.CharField("course_name",max_length=50)
@@ -27,7 +28,7 @@ class Student(models.Model):
     id = models.AutoField(primary_key=True)
     student_id = models.CharField("student_id", max_length=10)
     student_name = models.CharField("student_name",max_length=50)
-    student_password = models.CharField("student_id", max_length=50)
+    student_password = models.CharField("student_password", max_length=50)
     course1 = models.ForeignKey(Course,related_name="firstcourse")
     course2 = models.ForeignKey(Course,related_name="secondcourse")
     student_grade = models.CharField("student_grade",max_length=50)
@@ -37,7 +38,7 @@ class Attendence(models.Model):
     id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student,related_name='student')
     course = models.ForeignKey(Course,related_name='course')
-    time = models.DateTimeField('%Y-%m-%dT%H:%M:%S',"time",auto_now_add=True)
+    time = models.DateTimeField('time',"time",auto_now_add=True)
     ip = models.CharField("ip",max_length=20,default='192.168.7.1')
 
 

@@ -9,6 +9,7 @@ from app.forms import ArtistForm, CourseForm, StudentForm,LoginForm,AttendenceFo
 from app.models import *
 from django.views.decorators.csrf import csrf_exempt
 import time
+import datetime as dt
 @csrf_exempt
 
 # Create your views here.
@@ -108,7 +109,7 @@ def studentprofile(request):
             return render(request, 'Studentprofile.html', {'student': student, 'form': form,'error':True})
 
 
-
+from django.utils import timezone
 
 
 def studentdetails(request):
@@ -131,7 +132,9 @@ def studentdetails(request):
             course = form.cleaned_data['course']
             timenow = time.strftime('%H:%M',time.localtime(time.time()))
             Datenow = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-
+            print(Datenow)
+            date = Datenow.split('-')
+            now = timezone.now()
             weekday = int(datetime.now().weekday())
             print('weekday'+str(weekday))
             ip = getclientip(request)
@@ -148,10 +151,21 @@ def studentdetails(request):
             print(course.course_name)
             print(coursebegintime)
             print(courseendtime)
+            print('========================')
+            print(date[0]+"aaa"+date[1]+'aaa'+date[2])
             if course.id == 5:
+                # checkip = Attendence.objects.filter(ip=ip,time__year=date[0],time__month=date[1],time__day=date[2])
+                checkip = Attendence.objects.filter(ip=ip,student=student)
+                for eachattendence in checkip:
+                    print(str((eachattendence).time))
+                    if str((eachattendence).time)[:10] == Datenow:
+                        if now-eachattendence.time<dt.timedelta(minutes=30) :
+                            return render_to_response('studentdetails.html', RequestContext(request, {'form': form,
+                                                                                                  'repeat_is_wrong': True,
+                                                                                                  'student': student,
+                                                                                                  'attendences': allattendce}))
                 attendence = Attendence(student=student, course=course, ip=ip)
                 attendence.save()
-
                 return render_to_response('studentdetails.html', RequestContext(request, {'form': form,
                                                                                           'attendences': allattendce,
                                                                                           'student': student}))
@@ -198,7 +212,52 @@ def createstudent(request):
             userid = user[0].id
             request.session['student_id'] = userid
         return HttpResponseRedirect('/studentdetails')
+def getattendence(grade,week):
+    weekcount = [0,0,0,0,0]
+    checkattendence1 = Attendence.objects.filter(student__student_grade=grade)
+    for attendence1 in checkattendence1:
+        for i in range(0,5):
+            time = str(attendence1.time)[0:10]
+            if time in week[i]:
+                weekcount[i] += 1
+    return weekcount
+def getechartvalues():
+    week = []
+    echartsvalues = []
+    week1 = ['2017-02-27','2017-02-28','2017-03-01','2017-03-02''2017-03-03''2017-03-04' '2017-03-05']
+    week2 = ['2017-03-06','2017-03-07','2017-03-08','2017-03-09','2017-03-10','2017-03-11', '2017-03-12']
+    week3 = ['2017-03-13','2017-03-14','2017-03-15','2017-03-16','2017-03-17','2017-03-18', '2017-03-19']
+    week4 = ['2017-03-20','2017-03-21','2017-03-22','2017-03-23','2017-03-24','2017-03-25', '2017-03-26']
+    week5 = ['2017-03-27','2017-03-28','2017-03-29','2017-03-30','2017-03-31','2017-04-01', '2017-04-02']
+    week6 = ['2017-04-03', '2017-04-04', '2017-04-05', '2017-04-06', '2017-04-07', '2017-04-08', '2017-04-09']
+    week7 = ['2017-04-10', '2017-04-11', '2017-04-12', '2017-04-13', '2017-04-14', '2017-04-15', '2017-04-16']
+    week8 = ['2017-04-17', '2017-04-18', '2017-04-19', '2017-04-20', '2017-04-21', '2017-04-22', '2017-04-23']
+    week9 = ['2017-04-24', '2017-04-25', '2017-04-26', '2017-04-27', '2017-04-28', '2017-04-29', '2017-04-30']
+
+    week.append(week1)
+    week.append(week2)
+    week.append(week3)
+    week.append(week4)
+    week.append(week5)
+    week.append(week6)
+    week.append(week7)
+    week.append(week8)
+    week.append(week9)
+
+    echartsvalues1 = getattendence('1',week)
+    echartsvalues2 = getattendence('2', week)
+    echartsvalues3 = getattendence('3', week)
+    echartsvalues.append(echartsvalues1)
+    echartsvalues.append(echartsvalues2)
+    echartsvalues.append(echartsvalues3)
+    return echartsvalues
+
 
 def index(request):
-    return render(request, 'index.html')
+    echartsvalues = getechartvalues()
+    print(echartsvalues[0])
+    print(echartsvalues[1])
+    print(echartsvalues[2])
+    return render_to_response('index.html',RequestContext(request, {'grade1': echartsvalues[0],'grade2': echartsvalues[1],'grade3': echartsvalues[2]}))
+    # return render(request,'index.html')
 
